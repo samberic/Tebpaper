@@ -4,6 +4,7 @@ import { generateDigest } from '../services/digest.js';
 import { fetchNews } from '../services/news.js';
 import { curateDigest } from '../services/curator.js';
 import { enrichWithArchive } from '../services/archive.js';
+import { savePaper, getPaper } from '../store/papers.js';
 
 const router = Router();
 
@@ -202,12 +203,8 @@ router.post('/generate', async (req, res) => {
       period_end: now.toISOString(),
     });
 
-    return res.render('digest', {
-      title: 'The TebPaper',
-      ...view,
-      isAnonymous: true,
-      leaning,
-    });
+    const paperId = savePaper({ ...view, isAnonymous: true, leaning });
+    return res.redirect(`/paper/${paperId}`);
   } catch (err) {
     console.error('Error generating anonymous digest:', err);
     return res.render('home', {
@@ -246,6 +243,27 @@ router.get('/article/:id', requireAuth, async (req, res) => {
       message: 'Failed to load article.',
     });
   }
+});
+
+// GET /paper/:id — view a paper by permalink (anonymous, in-memory)
+router.get('/paper/:id', (req, res) => {
+  const paper = getPaper(req.params.id);
+
+  if (!paper) {
+    return res.status(404).render('home', {
+      title: 'The TebPaper',
+      noDigest: true,
+      isAnonymous: true,
+      paperExpired: true,
+      error: 'This paper has expired or the server was restarted. Generate a new edition.',
+    });
+  }
+
+  res.render('digest', {
+    title: 'The TebPaper',
+    ...paper,
+    paperId: req.params.id,
+  });
 });
 
 // GET /digest/history — list past digests (logged-in only)

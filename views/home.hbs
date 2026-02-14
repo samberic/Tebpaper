@@ -1,4 +1,4 @@
-<section class="edition-welcome">
+<section class="edition-welcome" {{#if paperExpired}}data-paper-expired="true"{{/if}}>
   {{#if error}}
   <div class="notice notice--error" role="alert">
     <p>{{error}}</p>

@@ -48,7 +48,7 @@ app.use((req, res, next) => {
   });
 
   // Navigation state
-  res.locals.isHome = req.path === '/';
+  res.locals.isHome = req.path === '/' || req.path.startsWith('/paper/');
   res.locals.isHistory = req.path.startsWith('/digest/history');
   res.locals.isSettings = req.path.startsWith('/settings');
 
