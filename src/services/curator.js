@@ -1,9 +1,14 @@
-import Anthropic from '@anthropic-ai/sdk';
+import { GoogleGenerativeAI } from '@google/generative-ai';
 
-const anthropic = new Anthropic();
-
-// Use Claude to curate and summarise articles for the digest
+// Use Gemini to curate and summarise articles for the digest
 export async function curateDigest({ articles, userLeaning, frequency, categories }) {
+  if (!process.env.GEMINI_API_KEY) {
+    throw new Error('GEMINI_API_KEY environment variable is not set. Add it to your Coolify environment variables or .env file. Get a free key at https://aistudio.google.com/apikey');
+  }
+
+  const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+  const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
+
   // Prepare a condensed article list for the prompt
   const articleSummaries = articles.slice(0, 80).map((a, i) => (
     `[${i}] "${a.title}" — ${a.sourceName} (${a.category}) | ${a.summary?.slice(0, 200) || 'No summary'}`
@@ -53,13 +58,8 @@ Format your response as JSON:
 
 Return ONLY valid JSON, no markdown fences or other text.`;
 
-  const message = await anthropic.messages.create({
-    model: 'claude-sonnet-4-5-20250929',
-    max_tokens: 4096,
-    messages: [{ role: 'user', content: prompt }],
-  });
-
-  const text = message.content[0].text;
+  const result = await model.generateContent(prompt);
+  const text = result.response.text();
 
   try {
     return JSON.parse(text);
