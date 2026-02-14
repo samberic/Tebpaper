@@ -1,9 +1,12 @@
 import Anthropic from '@anthropic-ai/sdk';
 
-const anthropic = new Anthropic();
-
 // Use Claude to curate and summarise articles for the digest
 export async function curateDigest({ articles, userLeaning, frequency, categories }) {
+  if (!process.env.ANTHROPIC_API_KEY) {
+    throw new Error('ANTHROPIC_API_KEY environment variable is not set. Add it to your Coolify environment variables or .env file.');
+  }
+
+  const anthropic = new Anthropic();
   // Prepare a condensed article list for the prompt
   const articleSummaries = articles.slice(0, 80).map((a, i) => (
     `[${i}] "${a.title}" — ${a.sourceName} (${a.category}) | ${a.summary?.slice(0, 200) || 'No summary'}`
