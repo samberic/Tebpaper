@@ -1,0 +1,97 @@
+<section class="edition-welcome">
+  {{#if error}}
+  <div class="notice notice--error" role="alert">
+    <p>{{error}}</p>
+  </div>
+  {{/if}}
+
+  {{#if noDigest}}
+  <div class="welcome-card">
+    {{#if isAnonymous}}
+    <h2>Your personal newspaper, curated by AI</h2>
+    <p>Quality journalism from expert sources, summarised and laid out like a broadsheet. No social media. No noise. Just the news that matters to you.</p>
+
+    <div class="landing-features">
+      <div class="feature">
+        <h3>Curated, not algorithmic</h3>
+        <p>AI selects and summarises from established journalists and publications.</p>
+      </div>
+      <div class="feature">
+        <h3>Your pace, your lens</h3>
+        <p>Choose your political leaning. Get daily or weekly digests.</p>
+      </div>
+      <div class="feature">
+        <h3>Bypass the paywall</h3>
+        <p>Automatic archive.today links for paywalled articles.</p>
+      </div>
+      <div class="feature">
+        <h3>Read like a real paper</h3>
+        <p>Classic broadsheet layout, optimised for tablets. Works without JavaScript.</p>
+      </div>
+    </div>
+
+    <hr class="section-rule">
+
+    <h3>Generate your edition</h3>
+    <form method="post" action="/generate" class="generate-form">
+      <fieldset class="field">
+        <legend>Political leaning</legend>
+        <p class="field-hint">This affects which opinion pieces and sources are prioritised.</p>
+        <div class="radio-group">
+          <label class="radio-label">
+            <input type="radio" name="political_leaning" value="left">
+            Left
+          </label>
+          <label class="radio-label">
+            <input type="radio" name="political_leaning" value="centre-left">
+            Centre-left
+          </label>
+          <label class="radio-label">
+            <input type="radio" name="political_leaning" value="centre" checked>
+            Centre
+          </label>
+          <label class="radio-label">
+            <input type="radio" name="political_leaning" value="centre-right">
+            Centre-right
+          </label>
+          <label class="radio-label">
+            <input type="radio" name="political_leaning" value="right">
+            Right
+          </label>
+        </div>
+      </fieldset>
+
+      <button type="submit" class="button button--primary">Generate Edition</button>
+      <p class="field-hint">This may take 30-60 seconds while we fetch and curate articles.</p>
+    </form>
+
+    <p class="auth-alt">
+      <a href="/login">Sign in</a> or <a href="/register">create an account</a> to save your preferences and access past editions.
+    </p>
+
+    {{else}}
+
+    <h2>Welcome to The TebPaper</h2>
+    <p>Your personalised news digest hasn't been generated yet. Configure your preferences first, then generate your first edition.</p>
+
+    <div class="welcome-actions">
+      <a href="/settings" class="button button--secondary">Configure Preferences</a>
+
+      <form method="post" action="/generate" class="inline-form">
+        <button type="submit" class="button button--primary">Generate First Edition</button>
+      </form>
+    </div>
+
+    <details class="welcome-info">
+      <summary>How it works</summary>
+      <ol>
+        <li><strong>Set your preferences</strong> — Choose your political leaning, categories of interest, and how much weight to give each.</li>
+        <li><strong>Generate a digest</strong> — We fetch articles from quality journalistic sources via RSS, then use AI to curate and summarise the most important stories for you.</li>
+        <li><strong>Read like a newspaper</strong> — Your digest is laid out in a classic broadsheet format. Click any article to read the full summary, or follow the link to the original source.</li>
+        <li><strong>Paywalled articles</strong> — We automatically provide archive.today links for paywalled content.</li>
+      </ol>
+    </details>
+    {{/if}}
+  </div>
+  {{/if}}
+</section>

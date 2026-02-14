@@ -1,0 +1,156 @@
+<section class="settings-page">
+  <h2>Settings</h2>
+
+  {{#if success}}
+  <div class="notice notice--success" role="status">
+    <p>{{success}}</p>
+  </div>
+  {{/if}}
+
+  {{#if error}}
+  <div class="notice notice--error" role="alert">
+    <p>{{error}}</p>
+  </div>
+  {{/if}}
+
+  {{!-- Profile settings --}}
+  <section class="settings-section" aria-labelledby="profile-heading">
+    <h3 id="profile-heading">Profile</h3>
+    <form method="post" action="/settings/profile" class="settings-form">
+      <div class="field">
+        <label for="display_name">Display name</label>
+        <input type="text" id="display_name" name="display_name" value="{{profile.display_name}}">
+      </div>
+
+      <fieldset class="field">
+        <legend>Political leaning</legend>
+        <p class="field-hint">This affects which sources and opinion pieces are prioritised in your digest.</p>
+        <div class="radio-group">
+          <label class="radio-label">
+            <input type="radio" name="political_leaning" value="left" {{#if (eq profile.political_leaning "left")}}checked{{/if}}>
+            Left
+          </label>
+          <label class="radio-label">
+            <input type="radio" name="political_leaning" value="centre-left" {{#if (eq profile.political_leaning "centre-left")}}checked{{/if}}>
+            Centre-left
+          </label>
+          <label class="radio-label">
+            <input type="radio" name="political_leaning" value="centre" {{#if (eq profile.political_leaning "centre")}}checked{{/if}}>
+            Centre
+          </label>
+          <label class="radio-label">
+            <input type="radio" name="political_leaning" value="centre-right" {{#if (eq profile.political_leaning "centre-right")}}checked{{/if}}>
+            Centre-right
+          </label>
+          <label class="radio-label">
+            <input type="radio" name="political_leaning" value="right" {{#if (eq profile.political_leaning "right")}}checked{{/if}}>
+            Right
+          </label>
+        </div>
+      </fieldset>
+
+      <fieldset class="field">
+        <legend>Digest frequency</legend>
+        <div class="radio-group">
+          <label class="radio-label">
+            <input type="radio" name="digest_frequency" value="daily" {{#if (eq profile.digest_frequency "daily")}}checked{{/if}}>
+            Daily
+          </label>
+          <label class="radio-label">
+            <input type="radio" name="digest_frequency" value="weekly" {{#if (eq profile.digest_frequency "weekly")}}checked{{/if}}>
+            Weekly
+          </label>
+        </div>
+      </fieldset>
+
+      <button type="submit" class="button button--primary">Save Profile</button>
+    </form>
+  </section>
+
+  <hr class="section-rule">
+
+  {{!-- Category preferences --}}
+  <section class="settings-section" aria-labelledby="categories-heading">
+    <h3 id="categories-heading">News Categories</h3>
+    <p>Enable categories and set their importance (1 = low, 10 = high). Higher-weighted categories get more articles in your digest.</p>
+
+    <form method="post" action="/settings/categories" class="settings-form">
+      <div class="categories-grid">
+        {{#each categories}}
+        <div class="category-card">
+          <div class="category-header">
+            <label class="toggle-label">
+              <input type="checkbox" name="category_{{this.category}}_enabled" {{#if this.enabled}}checked{{/if}}>
+              <span>{{capitalize this.category}}</span>
+            </label>
+          </div>
+          <div class="category-weight">
+            <label for="weight_{{this.category}}">Weight</label>
+            <input type="range" id="weight_{{this.category}}" name="category_{{this.category}}_weight"
+              min="1" max="10" value="{{this.weight}}" class="range-input">
+            <output class="weight-value">{{this.weight}}</output>
+          </div>
+        </div>
+        {{/each}}
+      </div>
+      <button type="submit" class="button button--primary">Save Categories</button>
+    </form>
+  </section>
+
+  <hr class="section-rule">
+
+  {{!-- Preferred sources --}}
+  <section class="settings-section" aria-labelledby="sources-heading">
+    <h3 id="sources-heading">Preferred Sources &amp; Writers</h3>
+    <p>Add specific news sources or journalists you trust. These will be given higher priority in your digest.</p>
+
+    {{#if sources.length}}
+    <table class="sources-table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Feed URL</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each sources}}
+        <tr>
+          <td>{{this.source_name}}</td>
+          <td>{{#if this.is_writer}}Writer{{else}}Publication{{/if}}</td>
+          <td>{{#if this.feed_url}}<code>{{truncate this.feed_url 40}}</code>{{else}}—{{/if}}</td>
+          <td>
+            <form method="post" action="/settings/sources/remove" class="inline-form">
+              <input type="hidden" name="source_id" value="{{this.id}}">
+              <button type="submit" class="link-button link-button--danger">Remove</button>
+            </form>
+          </td>
+        </tr>
+        {{/each}}
+      </tbody>
+    </table>
+    {{else}}
+    <p class="empty-state">No custom sources added yet.</p>
+    {{/if}}
+
+    <details class="add-source-form">
+      <summary>Add a source</summary>
+      <form method="post" action="/settings/sources/add" class="settings-form">
+        <div class="field">
+          <label for="source_name">Source or writer name</label>
+          <input type="text" id="source_name" name="source_name" required placeholder="e.g. The Economist, Robert Peston">
+        </div>
+        <div class="field">
+          <label for="feed_url">RSS feed URL <small>(optional)</small></label>
+          <input type="url" id="feed_url" name="feed_url" placeholder="https://example.com/rss">
+        </div>
+        <label class="toggle-label">
+          <input type="checkbox" name="is_writer">
+          <span>This is a specific writer/journalist</span>
+        </label>
+        <button type="submit" class="button button--secondary">Add Source</button>
+      </form>
+    </details>
+  </section>
+</section>

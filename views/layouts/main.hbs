@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{title}}</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <a href="#main-content" class="skip-link">Skip to content</a>
+
+  <header class="masthead" role="banner">
+    <div class="masthead-inner">
+      <nav class="masthead-nav" aria-label="Main navigation">
+        {{#if user}}
+        <a href="/" class="nav-link" {{#if isHome}}aria-current="page"{{/if}}>Today's Edition</a>
+        <a href="/digest/history" class="nav-link" {{#if isHistory}}aria-current="page"{{/if}}>Past Editions</a>
+        <a href="/settings" class="nav-link" {{#if isSettings}}aria-current="page"{{/if}}>Settings</a>
+        {{else}}
+        <a href="/" class="nav-link" {{#if isHome}}aria-current="page"{{/if}}>Home</a>
+        <a href="/login" class="nav-link">Sign In</a>
+        <a href="/register" class="nav-link">Register</a>
+        {{/if}}
+      </nav>
+
+      <h1 class="masthead-title"><a href="/">The TebPaper</a></h1>
+      <p class="masthead-tagline">Your curated news digest</p>
+
+      <div class="masthead-meta">
+        <span class="masthead-date">{{currentDate}}</span>
+        {{#if user}}
+        <span class="masthead-user">{{user.email}}</span>
+        <form method="post" action="/logout" class="inline-form">
+          <button type="submit" class="link-button">Sign out</button>
+        </form>
+        {{/if}}
+      </div>
+
+      <hr class="masthead-rule">
+    </div>
+  </header>
+
+  <main id="main-content" role="main">
+    {{{body}}}
+  </main>
+
+  <footer class="site-footer" role="contentinfo">
+    <hr class="footer-rule">
+    <p class="footer-text">The TebPaper — AI-curated journalism, no social media, no noise.</p>
+  </footer>
+
+  <script src="/js/enhance.js" defer></script>
+</body>
+</html>
