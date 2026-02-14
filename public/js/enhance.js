@@ -75,4 +75,25 @@
       }
     });
   });
+
+  // --- Paper permalink (localStorage) ---
+  if (document.querySelector('[data-paper-expired]')) {
+    // Paper no longer in memory — clear the stale permalink
+    localStorage.removeItem('tebpaper_last');
+  } else {
+    var digest = document.querySelector('.digest[data-paper-id]');
+    if (digest) {
+      // We're viewing a paper — save its permalink
+      var paperId = digest.getAttribute('data-paper-id');
+      if (paperId) {
+        localStorage.setItem('tebpaper_last', '/paper/' + paperId);
+      }
+    } else if (window.location.pathname === '/') {
+      // Home page — if there's a saved paper, redirect to it
+      var saved = localStorage.getItem('tebpaper_last');
+      if (saved) {
+        window.location.replace(saved);
+      }
+    }
+  }
 })();

@@ -4,7 +4,7 @@
 </div>
 {{/if}}
 
-<section class="digest" aria-label="News digest">
+<section class="digest" aria-label="News digest" {{#if paperId}}data-paper-id="{{paperId}}"{{/if}}>
   <header class="digest-header">
     <p class="digest-period">Covering {{periodStart}} — {{periodEnd}}</p>
     {{#if digest.subtitle}}
