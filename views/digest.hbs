@@ -1,0 +1,127 @@
+{{#if isAnonymous}}
+<div class="notice notice--demo" role="status">
+  <p><a href="/register">Create an account</a> to save your preferences, customise categories, and access past editions.</p>
+</div>
+{{/if}}
+
+<section class="digest" aria-label="News digest">
+  <header class="digest-header">
+    <p class="digest-period">Covering {{periodStart}} — {{periodEnd}}</p>
+    {{#if digest.subtitle}}
+    <p class="digest-subtitle">{{digest.subtitle}}</p>
+    {{/if}}
+    <form method="post" action="/generate" class="digest-refresh">
+      {{#if isAnonymous}}
+      <input type="hidden" name="political_leaning" value="{{leaning}}">
+      {{/if}}
+      <button type="submit" class="button button--small">Generate New Edition</button>
+    </form>
+  </header>
+
+  {{!-- Lead story --}}
+  {{#if lead}}
+  <article class="story story--lead">
+    <header class="story-header">
+      <span class="story-category">{{capitalize lead.category}}</span>
+      <h2 class="story-headline story-headline--lead">
+        {{#if isAnonymous}}
+        {{lead.title}}
+        {{else}}
+        <a href="/article/{{lead.id}}">{{lead.title}}</a>
+        {{/if}}
+      </h2>
+      {{#if lead.subtitle}}
+      <p class="story-deck">{{lead.subtitle}}</p>
+      {{/if}}
+    </header>
+    <div class="story-body">
+      {{{paragraphs lead.summary}}}
+    </div>
+    <footer class="story-meta">
+      <span class="story-source">{{lead.source_name}}</span>
+      {{#if lead.author}}
+      <span class="story-author">By {{lead.author}}</span>
+      {{/if}}
+      <span class="story-time">{{relativeTime lead.published_at}}</span>
+      {{#if lead.original_url}}
+      <a href="{{lead.original_url}}" target="_blank" rel="noopener">Original</a>
+      {{/if}}
+      {{#if lead.archive_url}}
+      <a href="{{lead.archive_url}}" target="_blank" rel="noopener">Archive</a>
+      {{/if}}
+    </footer>
+  </article>
+  {{/if}}
+
+  {{!-- Secondary stories --}}
+  {{#if secondary.length}}
+  <div class="stories-secondary">
+    {{#each secondary}}
+    <article class="story story--secondary">
+      <header class="story-header">
+        <span class="story-category">{{capitalize this.category}}</span>
+        <h3 class="story-headline story-headline--secondary">
+          {{#if ../isAnonymous}}
+          {{this.title}}
+          {{else}}
+          <a href="/article/{{this.id}}">{{this.title}}</a>
+          {{/if}}
+        </h3>
+        {{#if this.subtitle}}
+        <p class="story-deck">{{this.subtitle}}</p>
+        {{/if}}
+      </header>
+      <div class="story-body">
+        <p>{{truncate this.summary 300}}</p>
+      </div>
+      <footer class="story-meta">
+        <span class="story-source">{{this.source_name}}</span>
+        <span class="story-time">{{relativeTime this.published_at}}</span>
+        {{#if this.original_url}}
+        <a href="{{this.original_url}}" target="_blank" rel="noopener">Original</a>
+        {{/if}}
+        {{#if this.archive_url}}
+        <a href="{{this.archive_url}}" target="_blank" rel="noopener">Archive</a>
+        {{/if}}
+      </footer>
+    </article>
+    {{/each}}
+  </div>
+  {{/if}}
+
+  <hr class="section-rule">
+
+  {{!-- Category sections --}}
+  {{#eachInMap byCategory}}
+  <section class="digest-section" aria-labelledby="section-{{key}}">
+    <h3 class="section-heading" id="section-{{key}}">{{capitalize key}}</h3>
+    <div class="stories-grid">
+      {{#each value}}
+      <article class="story story--compact">
+        <h4 class="story-headline story-headline--compact">
+          {{#if ../../isAnonymous}}
+          {{this.title}}
+          {{else}}
+          <a href="/article/{{this.id}}">{{this.title}}</a>
+          {{/if}}
+        </h4>
+        {{#if this.subtitle}}
+        <p class="story-deck story-deck--compact">{{this.subtitle}}</p>
+        {{/if}}
+        <footer class="story-meta">
+          <span class="story-source">{{this.source_name}}</span>
+          <span class="story-time">{{relativeTime this.published_at}}</span>
+          {{#if this.original_url}}
+          <a href="{{this.original_url}}" target="_blank" rel="noopener">Original</a>
+          {{/if}}
+          {{#if this.archive_url}}
+          <a href="{{this.archive_url}}" target="_blank" rel="noopener">Archive</a>
+          {{/if}}
+        </footer>
+      </article>
+      {{/each}}
+    </div>
+  </section>
+  {{#unless @last}}<hr class="section-rule">{{/unless}}
+  {{/eachInMap}}
+</section>

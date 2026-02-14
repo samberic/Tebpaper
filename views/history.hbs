@@ -1,0 +1,29 @@
+<section class="history-page">
+  <h2>Past Editions</h2>
+
+  {{#if error}}
+  <div class="notice notice--error" role="alert">
+    <p>{{error}}</p>
+  </div>
+  {{/if}}
+
+  {{#if digests.length}}
+  <ol class="editions-list" reversed>
+    {{#each digests}}
+    <li class="edition-item">
+      <a href="/digest/{{this.id}}" class="edition-link">
+        <h3 class="edition-title">{{this.title}}</h3>
+        {{#if this.subtitle}}
+        <p class="edition-subtitle">{{this.subtitle}}</p>
+        {{/if}}
+        <p class="edition-meta">
+          <time datetime="{{this.created_at}}">{{formatDate this.created_at}}</time>
+        </p>
+      </a>
+    </li>
+    {{/each}}
+  </ol>
+  {{else}}
+  <p class="empty-state">No past editions yet. <a href="/">Generate your first digest</a>.</p>
+  {{/if}}
+</section>

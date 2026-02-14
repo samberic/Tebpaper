@@ -1,0 +1,27 @@
+{
+  "name": "tebpaper",
+  "version": "1.0.0",
+  "description": "AI-curated news digest in a classic newspaper format",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "db:start": "supabase start",
+    "db:stop": "supabase stop",
+    "db:reset": "supabase db reset",
+    "db:migration": "supabase migration new",
+    "test": "node --test test/app.test.js"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.39.0",
+    "@supabase/supabase-js": "^2.47.0",
+    "cookie-parser": "^1.4.7",
+    "express": "^4.21.1",
+    "express-handlebars": "^8.0.1",
+    "rss-parser": "^3.13.0"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}
